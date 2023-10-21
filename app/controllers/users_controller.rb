@@ -12,7 +12,7 @@ class UsersController < ApplicationController
     if user.save
       render json: user
     else
-      render json: {error: "Error creating user"}
+      render json: { error: 'Error creating user' }
     end
   end
 
@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     if user
       render json: user
     else
-      render json: {error: "User not found"}
+      render json: { error: 'User not found' }
     end
   end
 
