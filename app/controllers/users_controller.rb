@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     if @user
-      render json: @user
+      render json: @user, include: { workouts: { include: [{ exercises: { include: :movement } }, :gym] } }
     else
       render json: { error: 'User not found' }
     end
