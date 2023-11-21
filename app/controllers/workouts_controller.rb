@@ -7,7 +7,7 @@ class WorkoutsController < ApplicationController
   def show
     @workout = Workout.find(params[:id])
     if @workout
-      render json: @workout
+      render json: @workout, include: {exercises: {include: :movement}}
     else
       render json: {error: "Workout not found"}
     end
