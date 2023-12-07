@@ -25,9 +25,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def find_by_email
+    @user = User.find_by(email: params[:email])
+    if @user
+      render json: @user, include: { workouts: { include: [{ exercises: { include: :movement } }, :gym] } }
+    else
+      render json: { error: 'User not found' }
+    end
+  end
+
   private
 
   def user_params
-    params.require(:user).permit([:first_name, :surname])
+    params.require(:user).permit([:first_name, :surname, :email])
   end
 end
