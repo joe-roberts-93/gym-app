@@ -28,7 +28,10 @@ class UsersController < ApplicationController
   def find_by_email
     @user = User.find_by(email: params[:email])
     if @user
-      render json: @user, include: { workouts: { include: [{ exercises: { include: :movement } }, :gym] } }
+      # render json: @user, include: { workouts: { include: [{ exerciseable: { include: :movement } }, :gym] } }
+      # rewrite this to use the new polymorphic association
+      render json: @user, include: { workouts: { include: [{ exercises: { polymorphic: true, include: :movement } }, :gym] }}
+      #  Q. Why is this not working?
     else
       render json: { error: 'User not found' }
     end

@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   def show
     @exercise = Exercise.find(params[:id])
-    if exercise
+    if @exercise
       render json: @exercise
     else
       render json: { error: 'Exercise not found' }
@@ -18,7 +18,7 @@ class ExercisesController < ApplicationController
     if @exercise.save
       render json: @exercise
     else
-      render json: { error: 'Exercise not created' }
+      render json: { errors: @exercise.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -27,7 +27,8 @@ class ExercisesController < ApplicationController
   def exercise_params
     params.require(:exercise).permit(
       :movement_id,
-      :workout_id,
+      :exerciseable_id,
+      :exerciseable_type,
       :weight,
       :reps,
       :sets

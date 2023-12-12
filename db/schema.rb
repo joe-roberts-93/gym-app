@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_06_193436) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_11_185155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,20 +18,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_193436) do
     t.float "weight"
     t.integer "reps"
     t.integer "sets"
-    t.bigint "movement_id", null: false
-    t.bigint "workout_id", null: false
+    t.string "exerciseable_type", null: false
+    t.bigint "exerciseable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "movement_id", null: false
+    t.index ["exerciseable_type", "exerciseable_id"], name: "index_exercises_on_exerciseable"
     t.index ["movement_id"], name: "index_exercises_on_movement_id"
-    t.index ["workout_id"], name: "index_exercises_on_workout_id"
   end
 
   create_table "goals", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "exercise_id", null: false
+    t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["exercise_id"], name: "index_goals_on_exercise_id"
+    t.bigint "user_id", null: false
+    t.date "due_date"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -45,11 +46,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_193436) do
 
   create_table "movements", force: :cascade do |t|
     t.string "name"
-    t.boolean "legs"
-    t.boolean "chest"
-    t.boolean "core"
-    t.boolean "back"
-    t.boolean "arms"
+    t.boolean "legs", default: false
+    t.boolean "chest", default: false
+    t.boolean "core", default: false
+    t.boolean "back", default: false
+    t.boolean "arms", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -57,15 +58,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_193436) do
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "surname"
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "email"
   end
 
   create_table "workouts", force: :cascade do |t|
-    t.datetime "datetime"
-    t.bigint "gym_id", null: false
+    t.text "notes"
+    t.date "date"
+    t.time "time"
     t.bigint "user_id", null: false
+    t.bigint "gym_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["gym_id"], name: "index_workouts_on_gym_id"
@@ -73,8 +76,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_193436) do
   end
 
   add_foreign_key "exercises", "movements"
-  add_foreign_key "exercises", "workouts"
-  add_foreign_key "goals", "exercises"
   add_foreign_key "goals", "users"
   add_foreign_key "workouts", "gyms"
   add_foreign_key "workouts", "users"
