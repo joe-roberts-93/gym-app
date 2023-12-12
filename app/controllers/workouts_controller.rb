@@ -15,7 +15,9 @@ class WorkoutsController < ApplicationController
 
   def create
     @workout = Workout.new(
-      datetime: workout_params[:datetime],
+      date: workout_params[:date],
+      time: workout_params[:time],
+      notes: workout_params[:notes],
       gym_id: workout_params[:gym_id],
       user_id: workout_params[:user_id]
     )
@@ -30,9 +32,11 @@ class WorkoutsController < ApplicationController
 
   def workout_params
     params.require(:workout).permit([
-                                      :datetime,
+                                      :date,
+                                      :time,
                                       :gym_id,
-                                      :user_id
+                                      :user_id,
+                                      :notes
                                     ])
   end
 end
