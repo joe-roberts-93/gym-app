@@ -1,7 +1,9 @@
 class WorkoutsController < ApplicationController
+
   def index
-    @workouts = Workout.all
-    render json: @workouts
+    logger.info @current_user.inspect
+    @workouts = @current_user.workouts
+    render json: @workouts, include: [exercises: {include: :movement}]
   end
 
   def show

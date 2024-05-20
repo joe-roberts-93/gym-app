@@ -17,25 +17,38 @@ users = User.create([
                       {
                         first_name: 'John',
                         surname: 'Doe',
-                        email: 'john@email.com'
+                        email: 'john@email.com',
+                        password: 'password'
                       },
                       {
                         first_name: 'Jane',
                         surname: 'Doe',
-                        email: 'jane@email.com'
+                        email: 'jane@email.com',
+                        password: 'password'
+
                       },
                       {
                         first_name: 'Jack',
                         surname: 'Doe',
-                        email: 'jack@email.com'
+                        email: 'jack@email.com',
+                        password: 'password'
                       }
                     ])
 
-users.each(&:save)
+users.each do |user|
+  if user.valid?
+    user.save
+    puts "User created successfully"
+  else
+    puts "Error creating user:"
+    puts user.errors.full_messages.join(', ')
+  end
+end
 
 john = User.find_by(first_name: 'John')
 jane = User.find_by(first_name: 'Jane')
 jack = User.find_by(first_name: 'Jack')
+
 
 puts 'Creating gyms...'
 gyms = Gym.create([
@@ -371,4 +384,5 @@ jack_goal_chest_press = Exercise.create!(
   exerciseable: Goal.find_by(user_id: jack.id)
 )
 jack_goal_chest_press.save
+
 puts 'Finished!'

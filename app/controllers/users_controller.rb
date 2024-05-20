@@ -5,11 +5,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(
-      first_name: user_params[:first_name],
-      surname: user_params[:surname]
-    )
+    @user = User.new(user_params)
     if @user.save
+      login!
       render json: @user
     else
       render json: { error: 'Error creating user' }
@@ -35,6 +33,35 @@ class UsersController < ApplicationController
     else
       render json: { error: 'User not found' }
     end
+  end
+
+  def top_lifters
+    @top_lifters = User.top_lifters_last_week.limit(50)
+    Rails.logger.info "Reached the top_lifters action"
+    Rails.logger.info @top_lifters.inspect
+    html = "<h1>Top 50 Lifters (Last 7 Days)</h1>
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Total Weight Lifted</th>
+        </tr>
+      </thead>
+      <tbody>"
+
+    @top_lifters.each_with_index do |user, index|
+      html << "<tr>
+        <td>#{index + 1}</td>
+        <td>#{user.first_name} #{user.surname}</td>
+        <td>#{user.total_weight} kg</td>
+      </tr>"
+    end
+
+    html << "</tbody>
+    </table>"
+
+    render html: html.html_safe
   end
 
   private
